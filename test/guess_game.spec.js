@@ -2,7 +2,7 @@ var sinon = require('sinon');
 var readline = require('readline');
 var should = require('chai').should();
 
-var GuessGame = require('../lib/guess_game.js');
+var GuessGame = require('../lib/guess_game');
 var Guess = require('../lib/guess');
 var CompareNumber = require('../lib/compare_number');
 var AnswerGenerator = require('../lib/answer_generator');
@@ -61,12 +61,19 @@ describe('guess game', function () {
       question.calledWith('Please input your number(0):').should.not.be.true;
       done();
     });
+  });
 
+  it('should pirnt "xAxB" when guess is wrong', function (done) {
+    question.callsArgWithAsync(1, '1235');
+    game.start(function end () {
+      output.calledWith('3A0B\n').should.be.true;
+      done();
+    });
   });
 
   it('should print "Game Over" when have no time', function (done) {
     question.callsArgWithAsync(1, '5678');
-    game.start(function end() {
+    game.start(function end () {
       output.calledWith('Game Over\n').should.be.true;
       done();
     });
@@ -74,7 +81,8 @@ describe('guess game', function () {
 
   it('should print "Congratulations!" when guess correct answer', function (done) {
     question.callsArgWithAsync(1, '1234');
-    game.start(function end() {
+    game.start(function end () {
+      question.callCount.should.eql(1);
       output.calledWith('Congratulations!\n').should.be.true;
       done();
     });

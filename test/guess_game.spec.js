@@ -24,7 +24,7 @@ describe('guess game', function () {
       output: process.stdout
     });
 
-    question = sinon.stub(rl, 'question').callsArgWithAsync(1, '5678');
+    question = sinon.stub(rl, 'question');
 
     game = new GuessGame(rl, process.stdout, guess);
   });
@@ -35,32 +35,49 @@ describe('guess game', function () {
     question.restore();
   });
 
-  it('should print "Welcome!\n"', function () {
-    game.start();
-    output.calledWith('Welcome!\n').should.be.true;
+  it('should print "Welcome!"', function (done) {
+    question.callsArgWithAsync(1, '5678');
+    game.start(function end() {
+      output.calledWith('Welcome!\n').should.be.true;
+      done();
+    });
   });
 
-  it('should print "Please input your number(6)!\n"', function () {
-    game.start();
-    question.calledWith('Please input your number(6):').should.be.true;
+  it('should print "Please input your number(6)!"', function (done) {
+    question.callsArgWithAsync(1, '5678');
+    game.start(function end() {
+      question.calledWith('Please input your number(6):').should.be.true;
+      done();
+    });
+
   });
 
-  it('should print "Please input your number(x):"\n when guesses are always wrong', function () {
-    game.start();
-    question.callCount.should.eql(6);
-    question.calledWith('Please input your number(5):').should.be.true;
-    question.calledWith('Please input your number(1):').should.be.true;
-    question.calledWith('Please input your number(0):').should.not.be.true;
+  it('should print "Please input your number(x):" when guesses are always wrong', function (done) {
+    question.callsArgWithAsync(1, '5678');
+    game.start(function end() {
+      question.callCount.should.eql(6);
+      question.calledWith('Please input your number(5):').should.be.true;
+      question.calledWith('Please input your number(1):').should.be.true;
+      question.calledWith('Please input your number(0):').should.not.be.true;
+      done();
+    });
+
   });
 
-  it('should print "Game Over" when have no time', function () {
-    game.start();
-    output.calledWith('Game Over\n').should.be.true;
+  it('should print "Game Over" when have no time', function (done) {
+    question.callsArgWithAsync(1, '5678');
+    game.start(function end() {
+      output.calledWith('Game Over\n').should.be.true;
+      done();
+    });
   });
 
-  it('should print "Congratulations!" when guess correct answer', function () {
+  it('should print "Congratulations!" when guess correct answer', function (done) {
     question.callsArgWithAsync(1, '1234');
-    output.calledWith('Congratulations!\n').should.be.true;
+    game.start(function end() {
+      output.calledWith('Congratulations!\n').should.be.true;
+      done();
+    });
   });
 
 });
